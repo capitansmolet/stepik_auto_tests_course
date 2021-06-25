@@ -20,8 +20,8 @@ class ProductPage(BasePage):
                                                       PRODUCT_MESSAGE)
 
         assert product.text == product_in_basket.text, (
-            f"Wrong item in the cart. Should be {product},"
-            f"but given {product_in_basket}.")
+            f"Wrong item in the cart. Should be '{product.text}',"
+            f"but given '{product_in_basket.text}'.")
 
     def should_be_correct_cost(self):
         product_cost = ((self.browser.find_element(
