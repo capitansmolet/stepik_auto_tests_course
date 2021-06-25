@@ -17,6 +17,7 @@ def browser(request):
                                     {"intl.accept_languages": user_language})
 
     browser = webdriver.Chrome(options=options)
+    browser.implicitly_wait(5)
     yield browser
     print("\nquit browser..")
     browser.quit()
