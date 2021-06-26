@@ -37,3 +37,13 @@ class ProductPage(BasePage):
         assert product_cost == cost_in_basket, (
             f"Wrong cost. Should be {product_cost}, "
             f"but given {cost_in_basket}.")
+
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(
+            *ProductPageLocators.SUCCESS_MESSAGE), (
+            "Success message is presented")
+
+    def message_should_disappear(self):
+        assert self.is_disappeared(
+            *ProductPageLocators.SUCCESS_MESSAGE), (
+            "The message did not disappear")
