@@ -1,10 +1,10 @@
 import pytest
 from mimesis import Person
 
-from pages.basket_page import BasketPage
-from pages.locators import LinksLocators
-from pages.login_page import LoginPage
-from pages.product_page import ProductPage
+from .pages.basket_page import BasketPage
+from .pages.locators import LinksLocators
+from .pages.login_page import LoginPage
+from .pages.product_page import ProductPage
 
 person = Person()
 

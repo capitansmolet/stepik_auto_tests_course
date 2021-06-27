@@ -1,5 +1,5 @@
-from pages.locators import LinksLocators
-from pages.login_page import LoginPage
+from .pages.locators import LinksLocators
+from .pages.login_page import LoginPage
 
 
 def test_should_be_login_page(browser):
