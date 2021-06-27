@@ -1,29 +1,29 @@
-from pages.main_page import MainPage
+import pytest
+
+from pages.basket_page import BasketPage
+from pages.locators import LinksLocators
 from pages.login_page import LoginPage
-MAIN_LINK = "http://selenium1py.pythonanywhere.com/"
+from pages.main_page import MainPage
 
 
-def go_to_login_page(browser):
-    login_link = browser.find_element_by_css_selector("#login_link")
-    login_link.click()
+@pytest.mark.login_guest
+class TestLoginFromMainPage:
+    def test_guest_can_go_to_login_page(self, browser):
+        page = MainPage(browser, LinksLocators.MAIN_LINK)
+        page.open()
+        page.go_to_login_page()
+        login_page = LoginPage(browser, browser.current_url)
+        login_page.should_be_login_page()
+
+    def test_guest_should_see_login_link(self, browser):
+        page = MainPage(browser, LinksLocators.MAIN_LINK)
+        page.open()
+        page.should_be_login_link()
 
 
-def test_guest_can_go_to_login_page(browser):
-    # инициализируем Page Object,
-    # передаем в конструктор экземпляр драйвера и url адрес
-    page = MainPage(browser, MAIN_LINK)
-    # открываем страницу
+def test_guest_cant_see_product_in_basket_opened_from_main_page(browser):
+    page = MainPage(browser, LinksLocators.MAIN_LINK)
     page.open()
-    # выполняем метод страницы — переходим на страницу логина
-    page.go_to_login_page()
-    login_page = LoginPage(browser, browser.current_url)
-    login_page.should_be_login_page()
-
-
-def test_guest_should_see_login_link(browser):
-    page = MainPage(browser, MAIN_LINK)
-    page.open()
-    page.should_be_login_link()
-
-# команда для запуска теста
-# pytest -v --tb=line --language=en test_main_page.py
+    page.go_to_basket_page()
+    basket_page = BasketPage(browser, LinksLocators.BASKET_LINK)
+    basket_page.should_be_basket_empty()

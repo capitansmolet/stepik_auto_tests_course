@@ -1,9 +1,11 @@
 import math
+
 from selenium.common.exceptions import (NoAlertPresentException,
                                         NoSuchElementException,
                                         TimeoutException)
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from .locators import BasePageLocators
 
 
@@ -13,13 +15,20 @@ class BasePage:
         self.url = url
         self.browser.implicitly_wait(timeout)
 
+    def go_to_basket_page(self):
+        """Переход на страницу корзины товаров."""
+        basket_link = self.browser.find_element(*BasePageLocators.
+                                                BASKET_LINK)
+        basket_link.click()
+
     def go_to_login_page(self):
+        """Переход на страницу авторизации и регистрации."""
         login_link = self.browser.find_element(*BasePageLocators.
                                                MAIN_LOGIN_LINK)
         login_link.click()
 
     def is_disappeared(self, how, what, timeout=4):
-        """Возвращает True, если элемент исчезает со страницы"""
+        """Возвращает True, если элемент исчезает со страницы."""
         try:
             (WebDriverWait(self.browser, timeout, 1, TimeoutException).
              until_not(EC.presence_of_element_located((how, what))))
@@ -28,7 +37,7 @@ class BasePage:
         return True
 
     def is_element_present(self, how, what):
-        """Возвращает True, если элемент присутствует на странице"""
+        """Возвращает True, если элемент присутствует на странице."""
         try:
             self.browser.find_element(how, what)
         except NoSuchElementException:
@@ -36,7 +45,7 @@ class BasePage:
         return True
 
     def is_not_element_present(self, how, what, timeout=4):
-        """Провереят, что элемент не появляется на странице"""
+        """Провереят, что элемент не появляется на странице."""
         try:
             WebDriverWait(self.browser, timeout).until(
                 EC.presence_of_element_located((how, what)))
@@ -45,20 +54,29 @@ class BasePage:
         return False
 
     def open(self):
+        """Открывает страницу по ссылке."""
         self.browser.get(self.url)
 
+    def should_be_authorized_user(self):
+        """Возвращает True, если пользователь авторизован."""
+        assert self.is_element_present(
+            *BasePageLocators.USER_ICON), ("User icon is not presented,"
+                                           " probably unauthorised user")
+
     def should_be_login_link(self):
+        """Возвращает True, если есть кнопка перехода
+         на страницу авторизации."""
         assert self.is_element_present(
             *BasePageLocators.MAIN_LOGIN_LINK), "Login link is not presented"
 
     def solve_quiz_and_get_code(self):
+        """Отвечает на квиз, закрывает всплывающее окно."""
         alert = self.browser.switch_to.alert
         x = alert.text.split(" ")[2]
         answer = str(math.log(abs((12 * math.sin(float(x))))))
         alert.send_keys(answer)
         alert.accept()
         try:
-            #WebDriverWait(self.browser, 3).until(EC.alert_is_present())
             alert = self.browser.switch_to.alert
             alert_text = alert.text
             print(f"Your code: {alert_text}")
